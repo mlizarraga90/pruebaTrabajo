@@ -45,3 +45,4 @@ Route::post('/updateConfiguracion','Configuracion@updateConfiguracion');
 /*Ventas*/
 Route::post('/getventas','Ventas@getventas');
 Route::post('/getFolio','Ventas@getFolio');
+Route::post('/addVenta','Ventas@addVenta');

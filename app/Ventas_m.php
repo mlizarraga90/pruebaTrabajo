@@ -12,14 +12,28 @@ class Ventas_m extends Model{
         return self::filldata($ventas);
     }
     public static function getFolio(){
-        $sql="select id,folio from folios where status=1";
+        $sql="select id,folio from folios where status=0";
         return DB::select($sql);
+    }
+    public static function addVenta($data){
+        $articulos=array('idCliente'=>$data['idCliente'],'total'=>$data['totalPago'],'folio'=>$data['folio'],'plazo'=>$data['plazo'],'abono'=>$data['importeAbono'],'enganche'=>$data['enganche'],'ahorro'=>$data['importeAhorro'],'precioContado'=>$data['precioContado']);
+        $id=DB::table('ventas')->insertGetId($articulos);
+        if($id>0){
+            $total=count($data['articulos']);
+            for($i=0;$i<$total;$i++){
+                $detalleArticulo=array('folio'=>$data['folio'],'idProducto'=>$data['articulos'][$i]['id'],'cantidad'=>$data['articulos'][$i]['cantidad']);
+                DB::table('detalleventas')->insertGetId($detalleArticulo);
+            }
+            return $id;
+        }
     }
     public static function where($where){
     	$vacio=0;
-        $consulta="select folio,CONCAT_WS(' ',nombres,aPaterno,aMaterno) AS cliente,claveCliente,descripcion,fecha,total,IF(ventas.STATUS=1,'Activa','Deactiva') AS estatus,ventas.STATUS FROM ventas
-                    inner join  clientes ON clientes.id=ventas.idCliente
-                    inner join articulos ON articulos.id=ventas.idArticulo having status=1";
+        $consulta="SELECT ventas.folio,CONCAT_WS(' ',nombres,aPaterno,aMaterno) AS clientes,claveCliente as clave,descripcion,fecha,format(total,2) as total,IF(ventas.STATUS=1,'Activa','Deactiva') AS estatus,ventas.STATUS FROM ventas
+                    INNER JOIN  clientes ON clientes.id=ventas.idCliente
+                    INNER JOIN detalleventas ON detalleVentas.`folio`=ventas.`folio`
+                    INNER JOIN articulos ON articulos.id=detalleVentas.`idProducto` GROUP BY ventas.folio having status=1";
+
         $indice=0;
         $vacio="";
 
@@ -35,7 +49,6 @@ class Ventas_m extends Model{
             }
             ++$indice;
         endforeach;
-        
         return $consulta;
     }
     public static function filldata($result){

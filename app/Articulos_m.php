@@ -25,7 +25,7 @@ class Articulos_m extends Model{
     }
     public static function where($where){
     	$vacio=0;
-        $consulta="select id,descripcion,modelo,CONCAT('$',FORMAT(precio,2)) as precioformat,FORMAT(precio,2) as precio,existencia,status from articulos having status=1 ";
+        $consulta="select id,descripcion,modelo,CONCAT('$',FORMAT(precio,2)) as precioformat, precio,existencia,status from articulos having status=1 ";
         $indice=0;
         $vacio="";
 

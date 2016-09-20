@@ -8,11 +8,13 @@
 				<link rel="stylesheet" type="text/css" href="assets/css/vendimia.css">
 				<link rel="stylesheet" type="text/css" href="assets/boostrap/css/bootstrap.min.css">
 			</head>
+
 @show
 @section('menu')
 			<body ng-app="vendimia">
 				<div class="fullcontainer">
 					<div class="nav-bar">
+					<label class="fecha" id="fecha"></label>
 						<ul>
 							<li>
 								<a>Inicio</a>
@@ -23,8 +25,8 @@
 									<li><a href="/configuracion">Configuración</a></li>
 								</ul>
 							</li>
-							
 						</ul>
+
 					</div>
 				</div>
 @show

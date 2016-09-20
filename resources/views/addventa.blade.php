@@ -3,13 +3,16 @@
  	@parent
  	<style>
  		#tblVentaArticulos{position: relative;height:250px;border-bottom:1px solid grey;width:100%;}
- 		#divtblArticulos,#divTblClientes{width: 100%;}
+ 		#divtblArticulos,#divTblClientes{width: 100%;overflow: auto;}
+ 		.fade.in {opacity: 1;overflow: auto!important;}
+ 		#btnGenerarVenta,#divPlazos{display: none;}
 
  	</style>
 @stop
 @section('container')
 	@parent
 	<div class="container" ng-controller="ventas">
+	<div class="space">&nbsp;</div>
 		<div id="divTblVentas" class="ContainerTable">
 			<button id="bntAgregarCliente" class="buttons" ng-click="abrirDlgVentas()"><img class="add" src="/assets/images/add.png"/>Nuevo Venta </button>
 			<div>&nbsp;</div>
@@ -66,21 +69,33 @@
 				        			<tbody></tbody>
 				        		</table>
 				        	</div>
-				        	<div class="col-lg-12  col-md-12  col-sm-12 dicinfoventa" >
-				        		<label class="infoVenta">Enganche: $</label><label id="lblEnganche" class="infoCanti">00.00</label>
+				        	<div class="col-lg-12 col-md-12 col-sm-12" id="divPlazos">
+				        		<h3>ABONOS MENSUALES</h3>
+				        		<table id="tblPlazos" class="table">
+				        			<tbody></tbody>
+				        		</table>
+				        		<input type="hidden" id="txtPlazo" ng-model="Ventas.plazo"/>
+				        		<input type="hidden" id="txtimporteAbono" ng-model="Ventas.importeAbono"/>
+				        		<input type="hidden" id="txtimporteAhorro" ng-model="Ventas.importeAhorro"/>
+				        		<input type="hidden" id="txttotalPagar" ng-model="Ventas.totalPagar"/>
+				        		<input type="hidden" id="txtprecioContado" ng-model="Ventas.precioContado"/>
 				        	</div>
 				        	<div class="col-lg-12  col-md-12  col-sm-12 dicinfoventa" >
-				        		<label class="infoVenta">Bonificacion Enganche: $</label><label id="lblBonificacion" class="infoCanti">00.00</label>
+				        		<label class="infoVenta">Enganche: $</label><label id="lblEnganche" class="infoCanti" ng-model="Ventas.enganche">00.00</label>
 				        	</div>
 				        	<div class="col-lg-12  col-md-12  col-sm-12 dicinfoventa" >
-				        		<label class="infoVenta">Total: $</label><label id="lblTotal" class="infoCanti">00.00</label>
+				        		<label class="infoVenta">Bonificacion Enganche: $</label><label id="lblBonificacion" class="infoCanti" ng-model="Ventas.bonificacion">00.00</label>
+				        	</div>
+				        	<div class="col-lg-12  col-md-12  col-sm-12 dicinfoventa" >
+				        		<label class="infoVenta">Total: $</label><label id="lblTotal" class="infoCanti" ng-model="Ventas.total">00.00</label>
 				        	</div>
 				        </div>
 				    </form>
 			      </div>
 			      <div class="modal-footer">
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-			        <button type="submit" class="btn btn-primary" ng-click="Guardar()" id="btnGuardar">Guardar</button>
+			        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelar()">Cancelar</button>
+			        <button type="submit" class="btn btn-primary" ng-click="Siguiente()" id="btnGuardar">Siguiente</button>
+			        <button type="submit" class="btn btn-primary" ng-click="guardarVenta()" id="btnGenerarVenta">Guardar</button>
 			      </div>
 			    </div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
@@ -120,12 +135,24 @@
 	@parent
 
 <script>
+	
+	
 	var frm=new valudateForm()
+		f = new Date()
+		fecha="";
 		tabla= new DataTable()
 		tableCliente=new DataTable()
 		tablaArticulos=new DataTable()
 		opendlg=0
-		opc=0;/*Nos sirve para saver si se va a guardar o modificar 0=guardar,1=modificar*/
+		opc=0
+		Articulos=[]
+		configuracion={
+			tazaFinanciamiento:'',
+			enganche:'',
+			plazoMaximo:''
+		};/*Nos sirve para saver si se va a guardar o modificar 0=guardar,1=modificar*/
+		fecha=f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
+		$("#fecha").html(fecha);
 		tableCliente.CerateDataTable({
 			idTable:'tblClientes',
 			idContainer:'divTblClientes',
@@ -160,10 +187,11 @@
 	        click:function(){
 	        	$("#txtArticulo").val($(this).data("descripcion"));
 		        $("#txtidArticulo").val($(this).data("id"));
-		        $("#tblVentaArticulos tbody").append('<tr data-precio="'+$(this).data("precio")+'" data-idarticulo="'+$(this).data("id")+'"><td>'+$(this).data("descripcion")+'</td><td>'+$(this).data("modelo")+'</td><td><input id="'+$(this).data("id")+'"type="text" data-existencia="'+$(this).data('existencia')+'"class="inputarticulo" name="'+$(this).data('precio')+'" onkeypress="return validarn(event)" /></td><td>'+$(this).data("precio")+'</td><td>$0.00</td><td><img class="elimnar" src="/assets/images/delete.png"/></td></tr>');
+		        $("#tblVentaArticulos tbody").append('<tr data-precio="'+$(this).data("precio")+'" data-idarticulo="'+$(this).data("id")+'"><td>'+$(this).data("descripcion")+'</td><td>'+$(this).data("modelo")+'</td><td><input id="'+$(this).data("id")+'"type="text" data-existencia="'+$(this).data('existencia')+'"class="inputarticulo" name="'+$(this).data('precio')+'" onkeypress="return float(event)" /></td><td>$0.00</td><td>$0.00</td><td><img class="elimnar" src="/assets/images/delete.png"/></td></tr>');
 		        $("#"+$(this).data("id")).focus();
 		        $("#tblVentaArticulos tr").delegate('.elimnar','click',function(){
 			    	$(this).closest('tr').remove();
+			    	CalcularDetalleVenta(0,0,0,0,0,0)
 			    })
 		        $("#dlgCliente").modal('hide');
 	        }
@@ -178,19 +206,12 @@
 	        thead:[
 	          {text:'Folio Venta',bdName:'folio',name:'folio'},
 	          {text:'Clave Cliente',bdName:'clave',name:'clave'},
-	          {text:'Cliente',bdName:'cliente',name:'cliente'},  
+	          {text:'Cliente',bdName:'clientes',name:'clientes'},  
 	          {text:'Total',bdName:'total',name:'total'},  
 	          {text:'Fecha',bdName:'fecha',name:'fecha'},  
 	          {text:'Estatus',bdName:'estatus',name:'estatus'},  
-	          {text:'Eliminar',src:'/assets/images/delete.png',bdName:'id',name:'id',type:'img',click:function(){
-	          	opendlg=1;
-	          	$("#txtidcliente").val($(this).attr("id"));
-		        $("#dlgEliminar").modal('show');
-		      }
-	      },
 	        ],
 	        click:function(){
-	        	
 	        }
 	    });
 	    $(".float").keyup(function(event) {
@@ -205,35 +226,69 @@
 		        	return a;
 		        }
 		}
-		$("#tblVentaArticulos  ").delegate('input','keyup',function(index){
-			$(this).val(validateDecimal(this.value));
-			var row = document.getElementById("tblClientes").rows[$(this).closest('tr')[0].rowIndex];
-			var precio=$(this).attr('name');
-			if($(this).val()!=""){
-				if(parseInt($(this).val())>parseInt($(this).data('existencia'))){//Si la cantidad en el input es mapyr a la existencia
-					
-					$("#dlgMensajebody").html('El artículo seleccionado no cuenta con existencia, favor de verificar');
-					$("#dlgMensaje").modal('show');
-					$("#dlgMensajeTitle").html('Ventas');
-				    $(this).val($(this).data('existencia'));
-				}else{
-					var importe=0;
-					importe=( parseInt($(this).val())*parseFloat(precio) );
-				 	$('#tblVentaArticulos tr:nth-child('+$(this).closest('tr')[0].rowIndex+') td:nth-child(5)').html('$'+importe);
-				}
-				
-			}else{
-				 $('#tblVentaArticulos tr:nth-child('+$(this).closest('tr')[0].rowIndex+') td:nth-child(5)').html('$0.00');
-			}
+		$("#tblVentaArticulos").delegate('input','keyup',function(inde){
+			var importe=0
+				precio=0
+				enganche=0
+				bonificacion=0
+				total=0
+				tasafinaplazo=0;
+				CalcularDetalleVenta(importe,precio,enganche,bonificacion,total,tasafinaplazo);
+			
+			
 		});
+		function CalcularDetalleVenta(importe,precio,enganche,bonificacion,total,tazaFinanciamiento){
+			$("#tblVentaArticulos").find('input').each(function(index,i){
+				var preciotabla=0
+					importetabla=0;
+				index+=1;
+				if($(this).val()!=""){
+					if(parseInt($(this).val())>parseInt($(this).data('existencia'))){//Si la cantidad en el input es mapyr a la existencia
+						$("#dlgMensajebody").html('El artículo seleccionado no cuenta con existencia, favor de verificar');
+						$("#dlgMensaje").modal('show');
+						$("#dlgMensajeTitle").html('Ventas');
+						$('#tblVentaArticulos tr:nth-child('+index+') td:nth-child(4)').html('$0.00');
+					 	$('#tblVentaArticulos tr:nth-child('+index+') td:nth-child(5)').html('$0.00');
+					    $(this).val('0');
+					}else{
+						tasafinaplazo=(1+(configuracion.tazaFinanciamiento*configuracion.plazoMaximo)/100).toFixed(2);
+						precio+=parseFloat($(this).attr('name'))*parseFloat(tasafinaplazo);
+						preciotabla=parseFloat($(this).attr('name'))*parseFloat(tasafinaplazo);
+						importe+=( parseInt($(this).val())*precio)
+						importetabla=( parseInt($(this).val())*preciotabla);
+						enganche+=(parseFloat(configuracion.enganche)/100)*importe
+						bonificacion+=enganche*( ( parseFloat(configuracion.tazaFinanciamiento)*parseFloat(configuracion.plazoMaximo) )/100 )
+						total+=importe-enganche-bonificacion;
+						$("#lblEnganche").html(enganche.toFixed(2));
+						$("#lblBonificacion").html(bonificacion.toFixed(2) );
+						$("#lblTotal").html(total.toFixed(2) );
+						$('#tblVentaArticulos tr:nth-child('+index+') td:nth-child(4)').html('$'+preciotabla.toFixed(2));
+					 	$('#tblVentaArticulos tr:nth-child('+index+') td:nth-child(5)').html('$'+importetabla.toFixed(2));
+					}
+				}
+			});
+		}
     var app=angular.module('vendimia',[]);
     app.controller('ventas',function($scope,$http){
-    	$scope.ventas={};
+    	$scope.Ventas={};
     	getFolio();
+    	getConfig();
+    	$scope.cancelar=function(){
+    		$(".filters").val('');
+    	}
     	$scope.abrirDlgVentas=function(){
+    		getFolio();
+    		$(".filters").val('');
     		$("#dlgVentas").modal('show');
+    		$("#btnGuardar").show();
+    		$("#btnGenerarVenta,#divPlazos").hide();
+    		$("#tblVentaArticulos tbody tr,#tblPlazos tbody tr").remove();
+    		$("#txtCliente,#txtArticulo").val('');
+    		$("#lblRfc").html('');
+
     	}
     	$scope.BuscarCliente=function(){
+    		$(".filters").val('');
     		$("#dlgMensajeTitle").html('Clientes');
     		$("#divTblClientes").show();
     		$("#divtblArticulos").hide();
@@ -241,6 +296,7 @@
     		
     	}
     	$scope.BuscarArticulo=function(){
+    		$(".filters").val('');
     		$("#txtArticulo").val('');
     		$("#dlgMensajeTitle").html('Articulos');
     		$("#divTblClientes").hide();
@@ -262,6 +318,141 @@
 				}).error(function(data, status, headers, config) {
 				});
     	}
+    	$scope.Siguiente=function(){
+    		if($("#txtCliente").val()!="" && checkinputtablevacio()==0 ){//Si selecciono un cliete y si todos los inputs de la tabla articulos tienen datos.
+    			$("#btnGuardar").hide();
+    			$("#divPlazos,#btnGenerarVenta").show();
+    			CretaePlazos();
+    		}else{
+    			 $("#dlgMensajeTitle").html('Clientes');
+				 $("#dlgMensajebody").html('Los datos ingresados no son correctos, favor de verificar');
+				 $("#dlgMensaje").modal('show');
+    		}
+    	}
+    	$scope.guardarVenta=function(){
+    		if(checkRadio()==1){
+    			$scope.Ventas.idCliente=$("#txtidCliente").val();
+    			$scope.Ventas.idArticulo=$("#txtidArticulo").val();
+    			$scope.Ventas.enganche=$("#lblEnganche").html();
+    			$scope.Ventas.bonificacion=$("#lblBonificacion").html();
+    			$scope.Ventas.total=$("#lblTotal").html();
+    			$scope.Ventas.plazo=$("#txtPlazo").val();
+    			$scope.Ventas.importeAbono=$("#txtimporteAbono").val();
+    			$scope.Ventas.importeAhorro=$("#txtimporteAhorro").val();
+    			$scope.Ventas.totalPago=$("#txttotalPagar").val();
+    			$scope.Ventas.precioContado=$("#txtprecioContado").val();
+    			$scope.Ventas.articulos=Articulos;
+    			$scope.Ventas.folio=$("#folio").html();
+
+    			$http({
+				    url:'/addVenta',
+				    method: "POST",
+				    data: $scope.Ventas,
+				    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+				}).success(function(data, status, headers, config){
+				    if(data>=0){
+				    	$("#dlgVentas").modal('hide');
+			    		$("#btnGuardar").show();
+			    		$("#btnGenerarVenta,#divPlazos").hide();
+			    		$("#tblVentaArticulos tbody tr,#tblPlazos tbody tr").remove();
+			    		$("#txtCliente,#txtArticulo").val('');
+			    		$("#lblRfc").html('');
+				    	$("#dlgMensajeTitle").html('Ventas');
+				    	$("#dlgMensajebody").html('Bien Hecho, Tu venta ha sido registrada correctamente');
+				    	$("#dlgMensajeTitle").modal('show');
+				    }
+				    tabla.reload();
+				}).error(function(data, status, headers, config) {
+				    $("#dlg").modal('hide');
+				    $("#dlgMensajeTitle").html('Ventas');
+				    $("#dlgMensajebody").html('No se pudo realizar el movimiento');
+				    $("#dlgMensaje").modal('show');
+				});
+    		}else{
+    			$("#dlgMensajeTitle").html('Ventas');
+				 $("#dlgMensajebody").html('Debe seleccionar un plazo para realizar el pago de su compra');
+				 $("#dlgMensaje").modal('show');
+    		}
+    	}
+    	function checkRadio(){
+    		exito=0;
+    		$("#tblPlazos").find('input').each(function(index,i){
+    			
+    			if($(this).attr('type')=="radio")
+    				if($(this).prop('checked')==true){
+    					exito=1;
+    					var row = document.getElementById("tblPlazos").rows[index];
+		    			$("#txtPlazo").val(row.getAttribute('data-plazo'));
+		    			$("#txtimporteAbono").val(row.getAttribute('data-abono'));
+		    			$("#txtimporteAhorro").val(row.getAttribute('data-ahorro'));
+		    			$("#txttotalPagar").val(row.getAttribute('data-totalpagar'));
+		    			$("#txtprecioContado").val(row.getAttribute('data-contado'));
+		    			Articulos=[];
+						Articulos.length = 0;
+						Articulos.splice(0,Articulos.length-1);
+		    			getArticulosSave();
+    				}
+    		});
+    		return exito;
+    	}
+    	function getArticulosSave(){
+    		row=$('#tblVentaArticulos >tbody >tr').length;
+    		if(row>0){
+    			$("#tblVentaArticulos").find('input').each(function(){
+    				if($(this).attr('type')=="text")
+	    				if($(this).val()!=""){
+	    					console.log($(this).attr('id'));
+	    					Articulos.push({'id':$(this).attr('id'),'cantidad':$(this).val()});
+	    				}
+	    		});
+    		}
+    	}
+    	function CretaePlazos(){
+    		var precioContado=0
+    			totalPagar=0
+    			importeAbono=0
+    			importeAhorra=0;
+    		for(var i=3;i<=12;i+=3){
+    			precioContado=parseFloat($("#lblTotal").html())/(1+(parseFloat(configuracion.tazaFinanciamiento)*parseInt(configuracion.plazoMaximo) )/100 );
+    			totalPagar=precioContado*(1+(parseFloat(configuracion.tazaFinanciamiento)*i)/100 );
+    			
+    			importeAbono=totalPagar/i;
+    			importeAhorra=parseFloat($("#lblTotal").html())-totalPagar;
+    			$("#tblPlazos tbody").append('<tr data-contado="'+precioContado.toFixed(2)+'"data-plazo="'+i+'"data-abono="'+importeAbono.toFixed(2)+'" data-totalpagar="'+totalPagar.toFixed(2)+'" data-ahorro="'+importeAhorra.toFixed(2)+'"><td>'+i+' ABONOS DE </td><td>$'+importeAbono.toFixed(2)+'</td><td>TOTAL A PAGAR $'+totalPagar.toFixed(2)+'</td><td>SE AHORRA $'+importeAhorra.toFixed(2)+'</td><td><input type="radio" name="rdbplazo" /></td></tr>');
+    		}
+
+    	}
+    	function checkinputtablevacio(){
+    		var exito=0;
+    		row=$('#tblVentaArticulos >tbody >tr').length;
+    		if(row>0){
+    			$("#tblVentaArticulos").find('input').each(function(){
+    				if($(this).attr('type')=="text")
+	    				if($(this).val()=="")
+	    					exito=1
+	    				else if($(this).val()<=0)
+	    					exito=1
+	    		});
+    		}else{
+    			exito=1;
+    		}
+    		return exito;
+    	}
+    	function getConfig(){
+			$http({
+				url: '/getConfig',
+				method: "POST",
+				headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+			}).success(function(data, status, headers, config) {
+				if(frm.isEmptyJSON(data)==false){
+					configuracion.tazaFinanciamiento=data[0].tazaFinanciamiento;
+					configuracion.enganche=data[0].enganche;
+					configuracion.plazoMaximo=data[0].plazoMaximo;
+				}
+			}).error(function(data, status, headers, config) {
+				    
+			});
+		}
 
     });
 </script>

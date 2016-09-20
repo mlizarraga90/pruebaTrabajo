@@ -2,25 +2,28 @@ body{margin:0px;}
 .fullcontainer{position: relative;width: 100%;height: auto;}
 
 /*Menu*/
-.nav-bar{position: relative;width: 100%;background-color: black;height: 33px;    padding: 5px;}
+.nav-bar{position: relative;width: 100%;background-color: black;height: 45px;    padding: 5px;}
 ul{margin:0px;}
 .nav-bar ul li{padding:0px;width: 131px;}
 .nav-bar ul li{position: relative;list-style-type: none;margin-top: 7px;}
 .nav-bar ul li a{color: white;}
-.nav-bar ul li:hover>ul{display: inline-block;}
+.nav-bar ul li:hover>ul{display: inline-block;
+    z-index: 2;
+    position: inherit;}
 a{text-decoration: none;}
 /*Sub Menu*/
-.nav-bar ul li ul{display: none;}
+.nav-bar ul li ul{display: none;background-color: white;}
 .nav-bar ul li ul{padding:0px;width:120px;margin-top:12px;border:1px solid darkgrey;}
 .nav-bar ul li ul li:hover{background: darkgrey;}
 .nav-bar ul li ul li a{color:black;padding:5px;}
 .nav-bar ul li,.nav-bar ul li  ul li{width:120px;    margin-bottom: 6px;} 
-.nav-bar ul li a:hover,.nav-bar ul li a ul li a:hover{cursor: pointer};
+.nav-bar ul li a:hover,.nav-bar ul li a ul li a:hover{cursor: pointer;text-decoration:none;};
 .nav-bar .separator{    border-bottom: 1px solid darkkhaki;}
 .titleModule{text-align: center;}
 .sectionContainer{position: relative;max-width:1200px;width:100%;}
 .sectionContainer .title{position: relative;width:100%;padding:10px;}
 .titleModule{color:#6db6d0;text-align: left;padding-left:20px;margin-bottom:10px;}
+.separator{border-bottom:1px solid darkgrey;}
 /*table sorter*/
 .ContainerTable{position: relative;width:860px;margin:0px auto;height:400px;}
 .ContainerTable .table{position: relative;width: 100%;border-collapse:collapse; border: none;}
@@ -36,3 +39,5 @@ a{text-decoration: none;}
 .folio{color:green;position: relative;font-size: 120%;}
 .infoVenta{text-align: right;}
 .infoCanti,.dicinfoventa{text-align: right;}
+.space{position: relative;height: 40px;}
+.fecha{float: right;color:white;}

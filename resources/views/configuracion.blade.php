@@ -9,6 +9,7 @@
 	@parent
 
 <div class="container" ng-controller="configuracion">
+		<div class="space">&nbsp;</div>
 		<div class="ContainerTable">
 			<h3 class="titleModule">Configuracion General</h3>
 			<form ng-submit="Guadar()" id="frmConfiguracion">
@@ -58,7 +59,7 @@
 				    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
 				}).success(function(data, status, headers, config){
 				    if(data>=0){
-				    	$("#dlgMensajeTitle").html('Articulos');
+				    	$("#dlgMensajeTitle").html('Configuración');
 				    	$("#dlgMensajebody").html('Bien Hecho. La configuración ha sido registrada');
 				    	$("#dlgMensaje").modal('show');
 				    	opendlg=0;
@@ -67,7 +68,7 @@
 				    }
 				}).error(function(data, status, headers, config) {
 				    $("#dlgArticulos").modal('hide');
-				    $("#dlgMensajeTitle").html('Articulos');
+				    $("#dlgMensajeTitle").html('Configuración');
 				    $("#dlgMensajebody").html('No se pudo realizar el movimiento');
 				    $("#dlgMensaje").modal('show');
 				});

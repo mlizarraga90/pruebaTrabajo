@@ -5,6 +5,7 @@
 @section('container')
 	@parent
 <div class="container" ng-controller="articulos">
+		<div class="space">&nbsp;</div>
 		<div id="divtblArticulos" class="ContainerTable">
 			<button id="bntAgregarCliente" class="buttons" ng-click="abrirDlgArticulos()"><img class="add" src="/assets/images/add.png"/>Nuevo Articulo </button>
 			<div>&nbsp;</div>

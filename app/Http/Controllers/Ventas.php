@@ -16,5 +16,12 @@ class Ventas extends Controller{
         $articuloss=Ventas_m::getFolio($_POST);
         return json_encode($articuloss);
     }
-
+    function addVenta(Request $request){
+        $_POST = json_decode(file_get_contents('php://input'), true);
+        if(isset($_POST)){
+            unset($_POST['_token']);
+            $ventas=Ventas_m::addVenta($_POST);
+            return json_encode($ventas);
+        }
+    }
 }

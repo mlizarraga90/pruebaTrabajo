@@ -5,6 +5,7 @@
 @section('container')
 	@parent
 	<div class="container" ng-controller="clientes">
+		<div class="space">&nbsp;</div>
 		<div id="divTblClientes" class="ContainerTable">
 			<button id="bntAgregarCliente" class="buttons" ng-click="abrirDlgClientes()"><img class="add" src="/assets/images/add.png"/>Nuevo Cliente </button>
 			<div>&nbsp;</div>
@@ -193,7 +194,6 @@
 				    	opendlg=0;
 				    	tabla.reload();
 				    }
-				    
 				}).error(function(data, status, headers, config) {
 				     $("#dlgEliminar").modal('hide');
 				    $("#dlgMensajeTitle").html('Clientes');
