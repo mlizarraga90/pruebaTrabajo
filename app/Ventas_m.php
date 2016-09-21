@@ -16,7 +16,7 @@ class Ventas_m extends Model{
         return DB::select($sql);
     }
     public static function addVenta($data){
-        $articulos=array('idCliente'=>$data['idCliente'],'total'=>$data['totalPago'],'folio'=>$data['folio'],'plazo'=>$data['plazo'],'abono'=>$data['importeAbono'],'enganche'=>$data['enganche'],'ahorro'=>$data['importeAhorro'],'precioContado'=>$data['precioContado']);
+        $articulos=array('idCliente'=>$data['idCliente'],'totalcondescuento'=>$data['totalPago'],'total'=>$data['total'],'folio'=>$data['folio'],'plazo'=>$data['plazo'],'abono'=>$data['importeAbono'],'enganche'=>$data['enganche'],'ahorro'=>$data['importeAhorro'],'precioContado'=>$data['precioContado']);
         $id=DB::table('ventas')->insertGetId($articulos);
         if($id>0){
             $total=count($data['articulos']);

@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v9.63 
-MySQL - 5.6.16 : Database - vendimia
+MySQL - 5.5.5-10.1.10-MariaDB : Database - vendimia
 *********************************************************************
 */
 
@@ -95,11 +95,11 @@ CREATE TABLE `detalleventas` (
   `idProducto` int(11) DEFAULT NULL,
   `cantidad` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `detalleventas` */
 
-insert  into `detalleventas`(`id`,`folio`,`idProducto`,`cantidad`) values (1,'00001',4,3),(2,'00001',5,4);
+insert  into `detalleventas`(`id`,`folio`,`idProducto`,`cantidad`) values (1,'00001',4,3),(2,'00001',5,4),(3,'00003',4,1),(4,'00003',4,2),(5,'00005',4,1),(6,'00005',4,2),(7,'00006',4,1),(8,'00007',4,1),(9,'00008',4,1),(10,'00009',4,1),(11,'000010',4,1);
 
 /*Table structure for table `folios` */
 
@@ -110,11 +110,11 @@ CREATE TABLE `folios` (
   `folio` varchar(100) COLLATE utf8_bin DEFAULT NULL,
   `status` int(1) DEFAULT '0' COMMENT '0=disponible,1=usad',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `folios` */
 
-insert  into `folios`(`id`,`folio`,`status`) values (2,'00001',1),(4,'00003',0);
+insert  into `folios`(`id`,`folio`,`status`) values (2,'00001',1),(4,'00003',1),(5,'00005',1),(6,'00006',1),(7,'00007',1),(8,'00008',1),(9,'00009',1),(10,'000010',1),(11,'000011',0);
 
 /*Table structure for table `ventas` */
 
@@ -133,12 +133,13 @@ CREATE TABLE `ventas` (
   `enganche` float DEFAULT NULL,
   `ahorro` float DEFAULT NULL,
   `precioContado` float DEFAULT NULL,
+  `totalcondescuento` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `ventas` */
 
-insert  into `ventas`(`id`,`idCliente`,`idArticulo`,`total`,`fecha`,`folio`,`status`,`plazo`,`abono`,`enganche`,`ahorro`,`precioContado`) values (1,5,NULL,46084.35,'2016-09-19 23:35:04','00001',1,6,7681,15946,6628.57,39455.8);
+insert  into `ventas`(`id`,`idCliente`,`idArticulo`,`total`,`fecha`,`folio`,`status`,`plazo`,`abono`,`enganche`,`ahorro`,`precioContado`,`totalcondescuento`) values (1,5,NULL,46084.35,'2016-09-19 23:35:04','00001',1,6,7681,15946,6628.57,39455.8,NULL),(2,5,NULL,8613.16,'2016-09-20 17:39:02','00003',1,3,2871,3417,2002.32,7945.72,NULL),(3,5,NULL,8613.16,'2016-09-20 17:41:07','00005',1,3,2871,3417,2002.32,7945.72,NULL),(4,5,NULL,3386.12,'2016-09-20 17:41:47','00006',1,3,1129,1139,787.18,3123.73,NULL),(5,5,NULL,4173.30,'2016-09-20 17:49:42','00007',1,3,1129,1139,787.18,3123.73,3386.12),(6,5,NULL,4173.30,'2016-09-20 17:50:22','00008',1,3,1129,1139,787.18,3123.73,3386.12),(7,5,NULL,4173.30,'2016-09-20 17:51:01','00009',1,3,1129,1139,787.18,3123.73,3386.12),(8,5,NULL,4173.30,'2016-09-20 17:51:31','000010',1,3,1129,1139,787.18,3123.73,3386.12);
 
 /* Trigger structure for table `clientes` */
 

@@ -38,7 +38,7 @@
 				        		<button type="button" class="btn btn-primary" ng-click="BuscarCliente()" >Buscar Cliente</button>
 				        	</div>
 				        	<div class="col-lg-5 col-md-5 col-sm-6">
-				        		<input type="text" id="txtCliente" name="txtCliente" class="form-control"  placeholder="Cliente" />
+				        		<input type="text" id="txtCliente" name="txtCliente" class="form-control"  placeholder="Cliente"  readonly="readonly"/>
 				        		<input type="hidden" id="txtidCliente" name="txtidCliente"  class="form-control" ng-model="Ventas.idCliente"/>
 				        	</div>
 				        	<div class="col-lg-4 col-md-4 col-sm-3">
@@ -50,7 +50,7 @@
 				        		<button type="button" class="btn btn-primary" ng-click="BuscarArticulo()" >Buscar Articulo</button>
 				        	</div>
 				        	<div class="col-lg-5 col-md-5 col-sm-9">
-				        		<input type="text" id="txtArticulo"  class="form-control" name="txtArticulo" placeholder="Articulo" />
+				        		<input type="text" id="txtArticulo"  class="form-control" name="txtArticulo" placeholder="Articulo"readonly="readonly" />
 				        		<input type="hidden" id="txtidArticulo"  class="form-control" name="txtidArticulo" ng-model="Ventas.idArticulo"/>
 				        	</div>
 				        	<div class="col-lg-12 col-md-12 col-sm-12">&nbsp;</div>
@@ -233,15 +233,38 @@
 				bonificacion=0
 				total=0
 				tasafinaplazo=0;
-				CalcularDetalleVenta(importe,precio,enganche,bonificacion,total,tasafinaplazo);
+				
+				if($(this).val!="" && $(this).val()>0){
+					CalcularDetalleVenta(importe,precio,enganche,bonificacion,total,tasafinaplazo);
+				}else{
+					if($('#tblVentaArticulos >tbody >tr').length==0){
+						$("#lblEnganche").html('0.00');
+						$("#lblBonificacion").html('0.00');
+						$("#lblTotal").html('0.00');
+					}else {
+						
+						CalcularDetalleVenta(importe,precio,enganche,bonificacion,total,tasafinaplazo);
+					}
+					
+				}
+
 			
 			
 		});
+		function BloquearInputs(opc){//opc=1=bloqueas,opc=0=desbloqeas
+			$("#tblVentaArticulos").find('input').each(function(){
+				if(opc==1)
+					$(this).attr('readonly','readonly');
+				else
+					$(this).removeAttr('readonly');
+			});
+		}
 		function CalcularDetalleVenta(importe,precio,enganche,bonificacion,total,tazaFinanciamiento){
 			$("#tblVentaArticulos").find('input').each(function(index,i){
 				var preciotabla=0
 					importetabla=0;
 				index+=1;
+
 				if($(this).val()!=""){
 					if(parseInt($(this).val())>parseInt($(this).data('existencia'))){//Si la cantidad en el input es mapyr a la existencia
 						$("#dlgMensajebody").html('El artículo seleccionado no cuenta con existencia, favor de verificar');
@@ -250,11 +273,11 @@
 						$('#tblVentaArticulos tr:nth-child('+index+') td:nth-child(4)').html('$0.00');
 					 	$('#tblVentaArticulos tr:nth-child('+index+') td:nth-child(5)').html('$0.00');
 					    $(this).val('0');
-					}else{
+					}else {
 						tasafinaplazo=(1+(configuracion.tazaFinanciamiento*configuracion.plazoMaximo)/100).toFixed(2);
-						precio+=parseFloat($(this).attr('name'))*parseFloat(tasafinaplazo);
+						precio=parseFloat($(this).attr('name'))*parseFloat(tasafinaplazo);
 						preciotabla=parseFloat($(this).attr('name'))*parseFloat(tasafinaplazo);
-						importe+=( parseInt($(this).val())*precio)
+						importe=( parseInt($(this).val())*precio)
 						importetabla=( parseInt($(this).val())*preciotabla);
 						enganche+=(parseFloat(configuracion.enganche)/100)*importe
 						bonificacion+=enganche*( ( parseFloat(configuracion.tazaFinanciamiento)*parseFloat(configuracion.plazoMaximo) )/100 )
@@ -278,6 +301,7 @@
     	}
     	$scope.abrirDlgVentas=function(){
     		getFolio();
+    		BloquearInputs(2);
     		$(".filters").val('');
     		$("#dlgVentas").modal('show');
     		$("#btnGuardar").show();
@@ -323,6 +347,7 @@
     			$("#btnGuardar").hide();
     			$("#divPlazos,#btnGenerarVenta").show();
     			CretaePlazos();
+    			BloquearInputs(1);
     		}else{
     			 $("#dlgMensajeTitle").html('Clientes');
 				 $("#dlgMensajebody").html('Los datos ingresados no son correctos, favor de verificar');
@@ -357,9 +382,11 @@
 			    		$("#tblVentaArticulos tbody tr,#tblPlazos tbody tr").remove();
 			    		$("#txtCliente,#txtArticulo").val('');
 			    		$("#lblRfc").html('');
-				    	$("#dlgMensajeTitle").html('Ventas');
-				    	$("#dlgMensajebody").html('Bien Hecho, Tu venta ha sido registrada correctamente');
-				    	$("#dlgMensajeTitle").modal('show');
+			    		$("#dlgMensajeTitle").html('Ventas');
+						$("#dlgMensajebody").html('Bien Hecho, Tu venta ha sido registrada correctamente');
+						$("#dlgMensaje").modal('show');
+
+				    	
 				    }
 				    tabla.reload();
 				}).error(function(data, status, headers, config) {
@@ -369,7 +396,7 @@
 				    $("#dlgMensaje").modal('show');
 				});
     		}else{
-    			$("#dlgMensajeTitle").html('Ventas');
+    			 $("#dlgMensajeTitle").html('Ventas');
 				 $("#dlgMensajebody").html('Debe seleccionar un plazo para realizar el pago de su compra');
 				 $("#dlgMensaje").modal('show');
     		}

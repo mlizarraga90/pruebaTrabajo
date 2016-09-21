@@ -1,5 +1,9 @@
 body{margin:0px;}
+.divc{position: relative;width: 100%;height: 50px;}
+.divapp{position:relative;height:50px;float:right;}
+.tituloApp{color:green;font-size: 120%;position: relative;top:10px;}
 .fullcontainer{position: relative;width: 100%;height: auto;}
+.imgvendimia{position: relative;height:50px;width: 60px;float: right;}
 
 /*Menu*/
 .nav-bar{position: relative;width: 100%;background-color: black;height: 45px;    padding: 5px;}
@@ -25,7 +29,7 @@ a{text-decoration: none;}
 .titleModule{color:#6db6d0;text-align: left;padding-left:20px;margin-bottom:10px;}
 .separator{border-bottom:1px solid darkgrey;}
 /*table sorter*/
-.ContainerTable{position: relative;width:860px;margin:0px auto;height:400px;}
+.ContainerTable{position: relative;width:860px;margin:0px auto;height:400px;overflow: auto;}
 .ContainerTable .table{position: relative;width: 100%;border-collapse:collapse; border: none;}
 .table tbody tr td,.table thead tr th{padding: 0px;}
 .table thead{background-color:#ccccfe;}

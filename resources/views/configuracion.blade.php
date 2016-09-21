@@ -79,6 +79,9 @@
 				$("#dlgMensaje").modal('show');
             }
 		}
+		$scope.cancelar=function(){
+			frm.Clrfrm("frmConfiguracion","#ccc");
+		}
 		function getConfig(){
 			$http({
 				url: '/getConfig',

@@ -12,6 +12,8 @@
 @show
 @section('menu')
 			<body ng-app="vendimia">
+				<div class="divc"><div class="divapp"><span class="tituloApp">La Vendimia</span><img class="imgvendimia" src="./assets/images/logo.png" alt="vendimia"/></div></div>
+				
 				<div class="fullcontainer">
 					<div class="nav-bar">
 					<label class="fecha" id="fecha"></label>
